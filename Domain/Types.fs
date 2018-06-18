@@ -22,7 +22,7 @@ type DailyStatistics =
       TotalItemCount : int
       TotalOrderValue : Money }
 
-    static member (+) (dailyStats : DailyStatistics, orderStats : OrderStats) =
+    member dailyStats.add (orderStats : OrderStats) =
         let totalOrderCount = dailyStats.TotalOrderCount + 1
         let totalItemCount = dailyStats.TotalItemCount + orderStats.ItemCount
         let totalOrderValue = dailyStats.TotalOrderValue + orderStats.TotalValue

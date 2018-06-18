@@ -26,15 +26,19 @@ type DailyStatsRepository (storageDirectory : string) =
         |> Array.ofSeq
         |> fun x -> File.WriteAllLines (getFileName dayToLoad, x)
 
+    static let lObj = obj()
+
     member this.Retrieve : RetrieveDailyStatistics = 
         fun dateTime sellerId ->
-            loadModelFromStore (dateTime.Date)
-            |> Seq.tryFind (fun row -> row.SellerId = sellerId)
-            |> Option.defaultValue (DailyStatistics.Zero sellerId dateTime)
+            lock lObj (fun () ->
+                loadModelFromStore (dateTime.Date)
+                |> Seq.tryFind (fun row -> row.SellerId = sellerId)
+                |> Option.defaultValue (DailyStatistics.Zero sellerId dateTime))
 
     member this.Save : SaveDailyStatistics = 
         fun dateTime stats ->
-            loadModelFromStore (stats.Date)
-            |> Seq.filter (fun row -> row.SellerId <> stats.SellerId)
-            |> Seq.append [stats]
-            |> writeModelToStore stats.Date
+            lock lObj (fun () ->
+                loadModelFromStore (stats.Date)
+                |> Seq.filter (fun row -> row.SellerId <> stats.SellerId)
+                |> Seq.append [stats]
+                |> writeModelToStore stats.Date)

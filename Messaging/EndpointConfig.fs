@@ -3,6 +3,7 @@
 open NServiceBus
 open NServiceBus.Features
 open Asos.Marketplace.OrderStats.Service.EventHandlers
+open Asos.Marketplace.OrderStats.Service.Factories
 
 type EndpointConfig() =
     let configureIoc (endpointConfiguration : EndpointConfiguration) =

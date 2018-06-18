@@ -3,10 +3,10 @@
 open Asos.Marketplace.OrderStats.Events
 open Asos.Marketplace.OrderStats.Domain
 open System
-open Asos.Marketplace.OrderStats.Data
-open System.IO
 
 type OrderPlacedEventHandler = OrderPlacedEventHandler of (OrderPlaced -> unit)
+
+type GetDailyStatsQuery = { SellerId : SellerId; Date : DateTime }
 
 let orderPlacedEventHandler (getStats : RetrieveDailyStatistics) (saveStats : SaveDailyStatistics) (orderPlacedEvent : OrderPlaced) =
     let mapToDomain (x : OrderPlaced) : OrderStats = 
@@ -20,14 +20,9 @@ let orderPlacedEventHandler (getStats : RetrieveDailyStatistics) (saveStats : Sa
     let sellerId = SellerId orderPlacedEvent.SellerId
     let stats = getStats statsDate sellerId
     let todaysStats = mapToDomain orderPlacedEvent
-    let newStats = stats + todaysStats
+    let newStats = stats.add todaysStats
     
     saveStats statsDate newStats
 
-let createOrderPlacedEventHandler () =
-    let repo = 
-        let binPath = System.IO.Directory.GetCurrentDirectory()
-
-        DailyStatsRepository binPath
-
-    orderPlacedEventHandler repo.Retrieve repo.Save
+let getDailyStatsQueryHandler (getStats : RetrieveDailyStatistics) (query : GetDailyStatsQuery) =
+    getStats query.Date query.SellerId

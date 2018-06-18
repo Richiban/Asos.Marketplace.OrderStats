@@ -1,0 +1,1 @@
+{"SellerId":{"Case":"SellerId","Fields":["577316f9-31ea-493f-b630-3fb153b0a891"]},"Date":"2018-06-18T00:00:00+01:00","AverageOrderValue":50.0,"AverageOrderSize":1.0,"TotalOrderCount":8,"TotalItemCount":8,"TotalOrderValue":400.0}
