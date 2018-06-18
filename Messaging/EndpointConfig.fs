@@ -2,9 +2,20 @@
 
 open NServiceBus
 open NServiceBus.Features
-open Asos.Marketplace.OrderStats.Messages
+open Asos.Marketplace.OrderStats.Service.EventHandlers
 
 type EndpointConfig() =
+    let configureIoc (endpointConfiguration : EndpointConfiguration) =
+        endpointConfiguration.RegisterComponents(
+            registration = 
+                fun configureComponents ->
+                    let factory() = OrderPlacedEventHandler (createOrderPlacedEventHandler ())
+
+                    configureComponents.ConfigureComponent<OrderPlacedEventHandler>(factory, dependencyLifecycle = DependencyLifecycle.SingleInstance)
+                )
+
+        ()
+
     interface IConfigureThisEndpoint with
         member this.Customize endpointConfiguration =
             endpointConfiguration.DefineEndpointName("Asos.Marketplace.OrderStats")
@@ -14,8 +25,12 @@ type EndpointConfig() =
             let transport = endpointConfiguration.UseTransport<MsmqTransport>()
             let persistence = endpointConfiguration.UsePersistence<InMemoryPersistence>()
 
-            endpointConfiguration.Conventions().DefiningMessagesAs(fun t -> t.Assembly = typeof<OrderPlaced>.Assembly)
+            let conventions = endpointConfiguration.Conventions()
+            
+            conventions.DefiningEventsAs(fun t -> t.Namespace.EndsWith("Events")) |> ignore
 
             endpointConfiguration.DisableFeature<TimeoutManager>()
+
+            configureIoc endpointConfiguration
 
             ()

@@ -78,9 +78,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Messaging\Messaging.fsproj">
-      <Name>Messaging</Name>
-      <Project>{605d47ff-f240-4c28-a9c9-5d5b5de46a3a}</Project>
+    <ProjectReference Include="..\Events\Events.fsproj">
+      <Name>Events</Name>
+      <Project>{68fd0f61-7b6c-4c15-9170-ec0b31596688}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
