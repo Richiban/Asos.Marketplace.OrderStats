@@ -39,8 +39,8 @@ type DailyStatistics =
           Date = date
           TotalOrderCount = 0
           TotalItemCount = 0
-          AverageOrderSize = 1.0
-          AverageOrderValue = 1m
+          AverageOrderSize = 0.0
+          AverageOrderValue = 0m
           TotalOrderValue = 0m }
     
 
