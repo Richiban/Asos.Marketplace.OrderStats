@@ -6,6 +6,7 @@ open Suave
 open System.Net
 open Asos.Marketplace.OrderStats.Service.Factories
 open Asos.Marketplace.OrderStats.Domain
+open Suave.Filters
 
 let view model =
     sprintf <|
@@ -94,7 +95,7 @@ let view model =
                         Average Order Value
                     </div>
                     <div class=\"value\">
-                        &pound;%M
+                        &pound;%.2f
                     </div>
                 </div>
                 <div class=\"item\">
@@ -118,7 +119,7 @@ let view model =
                         Total Order Value
                     </div>
                     <div class=\"value\">
-                        &pound;%M
+                        &pound;%.2f
                     </div>
                 </div>
             <div>
@@ -133,10 +134,15 @@ let view model =
 let app () = 
     let queryHandler = createGetDailyStatsQueryHandler ()
 
-    let stats =
-        queryHandler { SellerId = SellerId (Guid.Parse("577316f9-31ea-493f-b630-3fb153b0a891")); Date = DateTime.Today }
+    let stats stringId =
+        let sellerId = 
+            match Guid.TryParse stringId with
+            | true, sellerId -> sellerId 
+            | false, _       -> Guid.Empty
+
+        queryHandler { SellerId = SellerId (sellerId); Date = DateTime.Today }
         
-    Successful.OK (view stats)
+    pathScan "/%s" (fun x -> Successful.OK (view (stats x)))
     
 
 [<EntryPoint>]
