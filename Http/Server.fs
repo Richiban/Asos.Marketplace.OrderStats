@@ -6,8 +6,6 @@ open Suave
 open System.Net
 open Asos.Marketplace.OrderStats.Service.Factories
 open Asos.Marketplace.OrderStats.Domain
-open Suave
-open Newtonsoft.Json
 
 let view model =
     sprintf <|
@@ -96,7 +94,7 @@ let view model =
                         Average Order Value
                     </div>
                     <div class=\"value\">
-                        %M
+                        &pound;%M
                     </div>
                 </div>
                 <div class=\"item\">
@@ -120,7 +118,7 @@ let view model =
                         Total Order Value
                     </div>
                     <div class=\"value\">
-                        %M
+                        &pound;%M
                     </div>
                 </div>
             <div>
@@ -144,7 +142,7 @@ let app () =
 [<EntryPoint>]
 let main argv = 
     let cts = new CancellationTokenSource()
-    let port = UInt16.Parse("8082")
+    let port = UInt16.Parse("8083")
     let bindings = [{ scheme = Protocol.HTTP; socketBinding = { ip = IPAddress.Parse("127.0.0.1"); port = port }}]
     let conf = { defaultConfig with cancellationToken = cts.Token; bindings = bindings }
     let listening, server = startWebServerAsync conf (app ())
